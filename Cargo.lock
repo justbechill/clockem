@@ -51,9 +51,11 @@ dependencies = [
 name = "clockem"
 version = "0.1.0"
 dependencies = [
+ "gdk4",
  "gio",
  "gtk4",
  "gtk4-layer-shell",
+ "pango",
 ]
 
 [[package]]
