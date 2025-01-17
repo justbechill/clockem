@@ -1,7 +1,24 @@
+use chrono::Local;
 use gio::prelude::*;
 use gtk4::prelude::*;
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use pango::ffi::pango_attr_list_insert;
+
+fn load_css() {
+    let display = gdk4::Display::default().expect("Could not get default display.");
+    let provider = gtk4::CssProvider::new();
+    let priority = gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION;
+
+    provider.load_from_data(include_str!("style.css"));
+    gtk4::style_context_add_provider_for_display(&display, &provider, priority);
+}
+
+fn current_time() -> String {
+    format!("{}", Local::now().format("%I:%M:%S %p"))
+}
+
+fn current_date() -> String {
+    format!("{}", Local::now().format("%b %d, %Y"))
+}
 
 // https://github.com/wmww/gtk-layer-shell/blob/master/examples/simple-example.c
 fn build_ui(application: &gtk4::Application) {
@@ -12,49 +29,40 @@ fn build_ui(application: &gtk4::Application) {
     window.init_layer_shell();
 
     // Display above normal windows
-    window.set_layer(Layer::Overlay);
-
-    // Push other windows out of the way
-    window.auto_exclusive_zone_enable();
-
-    // The margins are the gaps around the window's edges
-    // Margins and anchors can be set like this...
-    window.set_margin(Edge::Left, 40);
-    window.set_margin(Edge::Right, 40);
-    window.set_margin(Edge::Top, 20);
-
-    // ... or like this
-    // Anchors are if the window is pinned to each edge of the output
-    let anchors = [
-        (Edge::Left, true),
-        (Edge::Right, true),
-        (Edge::Top, false),
-        (Edge::Bottom, true),
-    ];
-
-    for (anchor, state) in anchors {
-        window.set_anchor(anchor, state);
-    }
+    window.set_layer(Layer::Bottom);
 
     //Clock stuffs
     let vbox = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
 
-    let time = gtk4::Label::new(Some("12:01:34 AM"));
+    let top = gtk4::Label::new(Some("12:01:34 AM"));
+    top.add_css_class("clock-top");
+    vbox.append(&top);
 
-    let mut df = pango::FontDescription::new();
-    df.set_family("JetBrains Mono");
-    let attr = pango::AttrFontDesc::new(&df);
-    let attrlist = pango::AttrList::new();
-    attrlist.insert(attr);
+    let bottom = gtk4::Label::new(Some("Jan 17, 2025"));
+    bottom.add_css_class("clock-bottom");
+    vbox.append(&bottom);
 
-    time.set_attributes(Some(&attrlist));
-    //time.set_markup("<span font=\"Jetbrains Mono\">Your mother</span>");
+    // we are using a closure to capture the label (else we could also use a normal
+    // function)
+    let tick = move || {
+        top.set_text(&current_time());
+        bottom.set_text(&current_date());
+        // we could return glib::ControlFlow::Break to stop our clock after this tick
+        glib::ControlFlow::Continue
+    };
 
-    vbox.append(&time);
+    // executes the closure once every second
+    glib::timeout_add_seconds_local(1, tick);
 
-    // Set up a widget
-    let label = gtk4::Label::new(Some(""));
-    label.set_markup("<span font_desc=\"20.0\">GTK Layer Shell example!</span>");
+    // Window formatting
+    window.set_title(Some("Clock"));
+    window.set_default_size(1550, 400);
+
+    // GTK4 removed the ability to just set a window's position so we have to move the clock around by messing with alignment and margins...
+    vbox.set_halign(gtk4::Align::Start);
+    vbox.set_valign(gtk4::Align::Center);
+
+    // Set widgets and show window
     window.set_child(Some(&vbox));
     window.show()
 }
@@ -63,6 +71,7 @@ fn main() {
     let application = gtk4::Application::new(Some("sh.wmww.gtk-layer-example"), Default::default());
 
     application.connect_activate(|app| {
+        load_css();
         build_ui(app);
     });
 
