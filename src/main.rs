@@ -27,7 +27,7 @@ fn load_css() {
     let provider = gtk4::CssProvider::new();
     let priority = gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION;
 
-    let default_css = String::from(include_str!("default_style.css"));
+    let default_css = String::from(include_str!("../default-configs/style.css"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
     let path = home + "/.config/clockem/style.css";
@@ -45,20 +45,20 @@ fn load_css() {
 }
 
 fn load_json() -> Config {
-    let default_config = String::from(include_str!("default_config.json"));
+    let default_config = String::from(include_str!("../default-configs/config.toml"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
-    let path = home + "/.config/clockem/config.json";
+    let path = home + "/.config/clockem/config.toml";
 
     let file_str = match fs::read_to_string(path) {
         Ok(text) => text,
         Err(e) => {
-            log::warn!("Could not load config: {}", e);
+            log::warn!("Could not load config.toml: {}", e);
             default_config
         }
     };
 
-    let config: Config = serde_json::from_str(&file_str).expect("Could not parse config");
+    let config: Config = toml::from_str(&file_str).unwrap();
     config
 }
 

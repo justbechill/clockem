@@ -1,9 +1,0 @@
-{
-  "clock": {
-    "enabled": true,
-    "top_format": "%I:%M:%S %p",
-    "bottom_format": "%b %d, %Y",
-    "position_x": 0,
-    "position_y": 0
-  }
-}
