@@ -111,6 +111,7 @@ dependencies = [
  "pango",
  "serde",
  "serde_json",
+ "toml",
 ]
 
 [[package]]

@@ -1,0 +1,6 @@
+[clock]
+enabled = true              # boolean
+top_format = "%H:%M:%S"     # date format string, use command date --help to view formatting options
+bottom_format = "%b %d, %Y" # same date format string
+position_x = 0              # positions in pixels from center of display
+position_y = 0

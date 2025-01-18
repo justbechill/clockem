@@ -27,13 +27,19 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     // WINDOW FORMATTING
     clock_window.set_title(Some("clockem-clock"));
 
-    // GTK4 removed the ability to just set a window's position so we have to move the clock around by messing with the entire window's size...
-    let position_x = clock_config.position_x * 2;
-    let position_y = clock_config.position_y * 2;
-    clock_window.set_default_size(position_x, position_y);
+    // GTK4 removed the ability to just set a window's position so we have to move the clock around by messing with the window's size and aligment...
+    if clock_config.position_x < 0 { container.set_halign(gtk4::Align::Start); }
+    else { container.set_valign(gtk4::Align::End); }
 
-    container.set_halign(gtk4::Align::Start);
-    container.set_valign(gtk4::Align::Start);
+    if clock_config.position_y < 0 { container.set_valign(gtk4::Align::Start); }
+    else { container.set_valign(gtk4::Align::End); }
+
+    println!("{} {}", clock_config.position_x.abs(), clock_config.position_y);
+
+    let position_x = clock_config.position_x.abs() * 2;
+    let position_y = clock_config.position_y.abs() * 2;
+
+    clock_window.set_default_size(position_x, position_y);
 
     // SHOW CLOCK
     clock_window.set_child(Some(&container));
