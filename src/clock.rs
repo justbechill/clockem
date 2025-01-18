@@ -34,8 +34,6 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     if clock_config.position_y < 0 { container.set_valign(gtk4::Align::Start); }
     else { container.set_valign(gtk4::Align::End); }
 
-    println!("{} {}", clock_config.position_x.abs(), clock_config.position_y);
-
     let position_x = clock_config.position_x.abs() * 2;
     let position_y = clock_config.position_y.abs() * 2;
 
