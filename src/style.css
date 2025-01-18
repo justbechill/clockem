@@ -1,0 +1,14 @@
+* {
+    background-color: rgba(255, 255, 255, 0);
+    font-family: JetBrainsMono;
+    color: #232531;
+}
+
+.clock-top {
+    font-size: 80px;
+    font-weight: bolder;
+}
+
+.clock-bottom {
+    font-size: 36px;
+}

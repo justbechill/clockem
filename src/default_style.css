@@ -1,0 +1,12 @@
+* {
+    color: black;
+}
+
+.clock-top {
+    font-size: 64px;
+    font-weight: bolder;
+}
+
+.clock-bottom {
+    font-size: 36px;
+}

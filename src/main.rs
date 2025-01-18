@@ -1,53 +1,80 @@
+//TODO:
+// AUTOMATICALLY CREATE CONFIG/CSS FILE
+// CHANGE CONFIG LANGUAGE
+
+mod clock;
+
+use std::fs;
 use gio::prelude::*;
-use gtk4::prelude::*;
-use gtk4_layer_shell::{Edge, Layer, LayerShell};
+use serde::Deserialize;
 
-// https://github.com/wmww/gtk-layer-shell/blob/master/examples/simple-example.c
-fn activate(application: &gtk4::Application) {
-    // Create a normal GTK window however you like
-    let window = gtk4::ApplicationWindow::new(application);
+#[derive(Debug, Deserialize)]
+struct Clock {
+    enabled: bool,
+    top_format: String,
+    bottom_format: String,
+    position_x: i32,
+    position_y: i32,
+}
 
-    // Before the window is first realized, set it up to be a layer surface
-    window.init_layer_shell();
+#[derive(Debug, Deserialize)]
+struct Config {
+    clock: Clock,
+}
 
-    // Display above normal windows
-    window.set_layer(Layer::Overlay);
+fn load_css() {
+    let display = gdk4::Display::default().expect("Could not get default display.");
+    let provider = gtk4::CssProvider::new();
+    let priority = gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION;
 
-    // Push other windows out of the way
-    window.auto_exclusive_zone_enable();
+    let default_css = String::from(include_str!("default_style.css"));
 
-    // The margins are the gaps around the window's edges
-    // Margins and anchors can be set like this...
-    window.set_margin(Edge::Left, 40);
-    window.set_margin(Edge::Right, 40);
-    window.set_margin(Edge::Top, 20);
+    let home = std::env::var("HOME").expect("Could not get home directory.");
+    let path = home + "/.config/clockem/style.css";
 
-    // ... or like this
-    // Anchors are if the window is pinned to each edge of the output
-    let anchors = [
-        (Edge::Left, true),
-        (Edge::Right, true),
-        (Edge::Top, false),
-        (Edge::Bottom, true),
-    ];
+    let file_str = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => {
+            log::warn!("Could not load css: {}", e);
+            default_css
+        }
+    };
 
-    for (anchor, state) in anchors {
-        window.set_anchor(anchor, state);
-    }
+    provider.load_from_data(&file_str);
+    gtk4::style_context_add_provider_for_display(&display, &provider, priority);
+}
 
-    // Set up a widget
-    let label = gtk4::Label::new(Some(""));
-    label.set_markup("<span font_desc=\"20.0\">GTK Layer Shell example!</span>");
-    window.set_child(Some(&label));
-    window.show()
+fn load_json() -> Config {
+    let default_config = String::from(include_str!("default_config.json"));
+
+    let home = std::env::var("HOME").expect("Could not get home directory.");
+    let path = home + "/.config/clockem/config.json";
+
+    let file_str = match fs::read_to_string(path) {
+        Ok(text) => text,
+        Err(e) => {
+            log::warn!("Could not load config: {}", e);
+            default_config
+        }
+    };
+
+    let config: Config = serde_json::from_str(&file_str).expect("Could not parse config");
+    config
 }
 
 fn main() {
     let application = gtk4::Application::new(Some("sh.wmww.gtk-layer-example"), Default::default());
+    let config = load_json();
 
-    application.connect_activate(|app| {
-        activate(app);
-    });
+    if config.clock.enabled {
+        application.connect_activate(|app| {
+            load_css();
+            let config = load_json();
+            crate::clock::build(app, config.clock);
+        });
+    } else {
+        application.connect_activate(|_app| {});
+    }
 
     application.run();
 }
