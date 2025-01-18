@@ -32,6 +32,8 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     let position_y = clock_config.position_y * 2;
     clock_window.set_default_size(position_x, position_y);
 
+    println!("{}", position_y);
+
     container.set_halign(gtk4::Align::Start);
     container.set_valign(gtk4::Align::Start);
 
