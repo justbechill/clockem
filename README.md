@@ -1,4 +1,4 @@
-# clockem (pronounced "clock 'em")
+# clockem ("clock 'em")
 Clock and other desktop widgets for Wayland.
 
 Current functional widgets are:
@@ -13,7 +13,7 @@ yay -S clockem-git
 ```
 
 ## Configuration
-Configuration files consist of `config.toml` and `style.css` in `~/.config/clockem`. If no config files are found, defaults will be loaded. see [default-configs]([url](https://github.com/JustBeChill/clockem/tree/main/default-configs)) for examples.
+Configuration files consist of `config.toml` and `style.css` in `~/.config/clockem`. If no config files are found, defaults will be loaded. see [default-configs](https://github.com/JustBeChill/clockem/tree/main/default-configs) for examples.
 
 ## Example
 ![image](https://github.com/user-attachments/assets/1bbc2ff1-c1d5-4895-8a21-f6e4608cba2f)
