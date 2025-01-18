@@ -43,7 +43,7 @@ fn main() {
             crate::clock::build(app, config.clock);
         });
     } else {
-        application.connect_activate(|app| {});
+        application.connect_activate(|_app| {});
     }
 
     application.run();
