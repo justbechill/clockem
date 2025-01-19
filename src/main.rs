@@ -1,4 +1,5 @@
 mod clock;
+mod wallpaper;
 
 use std::{fs, io::Write, io::Result};
 use gio::prelude::*;
@@ -13,9 +14,17 @@ struct Clock {
     position_y: i32,
 }
 
+#[derive(Debug, Deserialize, Clone)]
+struct Wallpaper {
+    enabled: bool,
+    directory: String,
+    vert_adjustment: i32,
+}
+
 #[derive(Debug, Deserialize)]
 struct Config {
     clock: Clock,
+    wallpaper: Wallpaper,
 }
 
 fn path_exists(path: &str) -> bool {
@@ -48,7 +57,7 @@ fn load_css() -> Result<()> {
     Ok(())
 }
 
-fn load_json() -> Result<Config> {
+fn load_config() -> Result<Config> {
     let default_config = String::from(include_str!("../default-configs/config.toml"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
@@ -77,8 +86,17 @@ fn main() -> Result<()> {
         }
     }
 
-    let application = gtk4::Application::new(Some("sh.wmww.gtk-layer-example"), Default::default());
-    let config = load_json()?;
+    let application = gtk4::Application::new(Some("com.clockem"), Default::default());
+    let config = load_config()?;
+
+    if config.wallpaper.enabled {
+        application.connect_activate(move |app| {
+            let _ = load_css();
+            crate::wallpaper::build(app, config.wallpaper.clone());
+        });
+    } else {
+        application.connect_activate(|_app| {});
+    }
 
     if config.clock.enabled {
         application.connect_activate(move |app| {
