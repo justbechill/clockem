@@ -3,7 +3,7 @@ use chrono::Local;
 use gtk4::prelude::*;
 use gtk4_layer_shell::{Layer, LayerShell};
 
-/**
+/**;
 Configures, renders, and updates clock widget.
 */
 pub fn build(application: &gtk4::Application, clock_config: Clock) {

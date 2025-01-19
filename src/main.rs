@@ -1,14 +1,10 @@
-//TODO:
-// AUTOMATICALLY CREATE CONFIG/CSS FILE
-// CHANGE CONFIG LANGUAGE
-
 mod clock;
 
-use std::fs;
+use std::{fs, io::Write, io::Result};
 use gio::prelude::*;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 struct Clock {
     enabled: bool,
     top_format: String,
@@ -22,59 +18,78 @@ struct Config {
     clock: Clock,
 }
 
-fn load_css() {
+fn path_exists(path: &str) -> bool {
+    fs::metadata(path).is_ok()
+}
+
+fn load_css() -> Result<()> {
+    // CSS STUFFS
     let display = gdk4::Display::default().expect("Could not get default display.");
     let provider = gtk4::CssProvider::new();
     let priority = gtk4::STYLE_PROVIDER_PRIORITY_APPLICATION;
 
+    // READING STYLE FILE
     let default_css = String::from(include_str!("../default-configs/style.css"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
-    let path = home + "/.config/clockem/style.css";
+    let style_path = home + "/.config/clockem/style.css";
 
-    let file_str = match fs::read_to_string(path) {
-        Ok(text) => text,
-        Err(e) => {
-            log::warn!("Could not load css: {}", e);
-            default_css
-        }
-    };
+    if !path_exists(&style_path) {
+        let mut file = std::fs::File::create(&style_path)?;
+        file.write_all(default_css.as_bytes())?;
+    }
 
+    let file_str = fs::read_to_string(&style_path)?;
+
+    // MORE CSS STUFFS
     provider.load_from_data(&file_str);
     gtk4::style_context_add_provider_for_display(&display, &provider, priority);
+
+    Ok(())
 }
 
-fn load_json() -> Config {
+fn load_json() -> Result<Config> {
     let default_config = String::from(include_str!("../default-configs/config.toml"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
-    let path = home + "/.config/clockem/config.toml";
+    let config_path = home + "/.config/clockem/config.toml";
 
-    let file_str = match fs::read_to_string(path) {
-        Ok(text) => text,
-        Err(e) => {
-            log::warn!("Could not load config.toml: {}", e);
-            default_config
-        }
-    };
+    if !path_exists(&config_path) {
+        let mut file = std::fs::File::create(&config_path)?;
+        file.write_all(default_config.as_bytes())?;
+    }
+
+    let file_str = fs::read_to_string(config_path)?;
 
     let config: Config = toml::from_str(&file_str).unwrap();
-    config
+    Ok(config)
 }
 
-fn main() {
+fn main() -> Result<()> {
+    // CREATE CONFIG DIRECTORY IF IT DOESN'T EXIST
+    let dir_path = std::env::var("HOME").expect("Could not get home directory.") + "/.config/clockem";
+    if !path_exists(&dir_path) {
+        match fs::create_dir(&dir_path) {
+            Ok(_text) => {},
+            Err(e) => {
+                log::warn!("Could not create config directory: {}", e)
+            }
+        }
+    }
+
     let application = gtk4::Application::new(Some("sh.wmww.gtk-layer-example"), Default::default());
-    let config = load_json();
+    let config = load_json()?;
 
     if config.clock.enabled {
-        application.connect_activate(|app| {
-            load_css();
-            let config = load_json();
-            crate::clock::build(app, config.clock);
+        application.connect_activate(move |app| {
+            let _ = load_css();
+            crate::clock::build(app, config.clock.clone());
         });
     } else {
         application.connect_activate(|_app| {});
     }
 
     application.run();
+
+    Ok(())
 }
