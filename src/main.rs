@@ -18,7 +18,7 @@ struct Clock {
 struct Wallpaper {
     enabled: bool,
     directory: String,
-    bottom_margin: i32,
+    vert_adjustment: i32,
 }
 
 #[derive(Debug, Deserialize)]
@@ -57,7 +57,7 @@ fn load_css() -> Result<()> {
     Ok(())
 }
 
-fn load_json() -> Result<Config> {
+fn load_config() -> Result<Config> {
     let default_config = String::from(include_str!("../default-configs/config.toml"));
 
     let home = std::env::var("HOME").expect("Could not get home directory.");
@@ -87,7 +87,7 @@ fn main() -> Result<()> {
     }
 
     let application = gtk4::Application::new(Some("com.clockem"), Default::default());
-    let config = load_json()?;
+    let config = load_config()?;
 
     if config.wallpaper.enabled {
         application.connect_activate(move |app| {

@@ -1,6 +1,6 @@
 use crate::Wallpaper;
 use gtk4::prelude::*;
-use gtk4_layer_shell::{Layer, LayerShell};
+use gtk4_layer_shell::{Edge, Layer, LayerShell};
 
 pub fn build(application: &gtk4::Application, wp_config: Wallpaper) {
     // SET UP WINDOW AS A LAYER
@@ -21,11 +21,10 @@ pub fn build(application: &gtk4::Application, wp_config: Wallpaper) {
     let picture = gtk4::Picture::for_file(&file);
 
     // BOTTOM MARGIN THING BECAUSE OF WAYBAR
-    picture.set_margin_bottom(wp_config.bottom_margin);
+    picture.set_margin_bottom(wp_config.vert_adjustment);
 
+    // SHOW WALLPAPER
     wp_window.set_child(Some(&picture));
-
-
     wp_window.set_title(Some("clockem-wallpaper"));
     wp_window.show();
 }
