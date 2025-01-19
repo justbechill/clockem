@@ -4,3 +4,8 @@ top_format = "%H:%M:%S"     # date format string, use command date --help to vie
 bottom_format = "%b %d, %Y" # same date format string
 position_x = 0              # positions in pixels from center of display
 position_y = 0
+
+[wallpaper] # for now, the wallpaper image will always display at full scale, so it must be the resolution of your display to appear properly.
+enabled = true
+directory = ""
+bottom_margin = 0 # possibly needed if wallpaper has gap at the top of the page, mainly caused by things like waybar
