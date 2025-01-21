@@ -14,14 +14,14 @@ pub fn build(application: &gtk4::Application, wp_config: Wallpaper) {
     // CREATE PICTURE WIDGET
     let home = std::env::var("HOME").expect("Could not load wallpaper.");
 
-    let mut wp_dir = wp_config.directory;
+    let mut wp_dir = wp_config.directory.unwrap_or(String::new());
     wp_dir = wp_dir.replace("~", &home);
 
     let file = gio::File::for_path(&wp_dir);
     let picture = gtk4::Picture::for_file(&file);
 
     // BOTTOM MARGIN THING BECAUSE OF WAYBAR
-    picture.set_margin_bottom(wp_config.vert_adjustment);
+    picture.set_margin_bottom(wp_config.vert_adjustment.unwrap_or(0));
 
     // SHOW WALLPAPER
     wp_window.set_child(Some(&picture));
