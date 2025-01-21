@@ -3,11 +3,11 @@
     color: black;
 }
 
-.clock-top {
+.clock-top .weather-top {
     font-size: 80px;
     font-weight: bolder;
 }
 
-.clock-bottom {
+.clock-bottom .weather-bottom {
     font-size: 36px;
 }

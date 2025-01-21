@@ -1,9 +1,10 @@
 mod clock;
 mod wallpaper;
+mod weather;
 
-use std::{fs, io::Write, io::Result};
 use gio::prelude::*;
 use serde::Deserialize;
+use std::{fs, io::Result, io::Write};
 
 #[derive(Debug, Deserialize, Clone)]
 struct Clock {
@@ -23,10 +24,20 @@ struct Wallpaper {
     vert_adjustment: Option<i32>,
 }
 
+#[derive(Debug, Deserialize, Clone)]
+struct Weather {
+    enabled: Option<bool>,
+    position_x: Option<i32>,
+    position_y: Option<i32>,
+    y_align: Option<String>,
+    update_interval: Option<u32>,
+}
+
 #[derive(Debug, Deserialize)]
 struct Config {
     clock: Option<Clock>,
     wallpaper: Option<Wallpaper>,
+    weather: Option<Weather>,
 }
 
 /**
@@ -81,10 +92,11 @@ fn load_config() -> Result<Config> {
 
 fn main() -> Result<()> {
     // CREATE CONFIG DIRECTORY IF IT DOESN'T EXIST
-    let dir_path = std::env::var("HOME").expect("Could not get home directory.") + "/.config/clockem";
+    let dir_path =
+        std::env::var("HOME").expect("Could not get home directory.") + "/.config/clockem";
     if !path_exists(&dir_path) {
         match fs::create_dir(&dir_path) {
-            Ok(_text) => {},
+            Ok(_text) => {}
             Err(e) => {
                 log::warn!("Could not create config directory: {}", e)
             }
@@ -94,7 +106,7 @@ fn main() -> Result<()> {
     let application = gtk4::Application::new(Some("com.clockem"), Default::default());
     let config = load_config()?;
 
-    if let Some(wallpaper) = config.wallpaper{
+    if let Some(wallpaper) = config.wallpaper {
         if wallpaper.enabled.unwrap_or(false) {
             application.connect_activate(move |app| {
                 let _ = load_css();
@@ -103,11 +115,20 @@ fn main() -> Result<()> {
         }
     }
 
-    if let Some(clock) = config.clock{
+    if let Some(clock) = config.clock {
         if clock.enabled.unwrap_or(false) {
             application.connect_activate(move |app| {
                 let _ = load_css();
                 crate::clock::build(app, clock.clone());
+            });
+        }
+    }
+
+    if let Some(weather) = config.weather {
+        if weather.enabled.unwrap_or(false) {
+            application.connect_activate(move |app| {
+                let _ = load_css();
+                crate::weather::build(app, weather.clone());
             });
         }
     }
