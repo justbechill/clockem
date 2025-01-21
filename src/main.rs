@@ -7,26 +7,31 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize, Clone)]
 struct Clock {
-    enabled: bool,
-    top_format: String,
-    bottom_format: String,
-    position_x: i32,
-    position_y: i32,
+    enabled: Option<bool>,
+    top_format: Option<String>,
+    bottom_format: Option<String>,
+    position_x: Option<i32>,
+    position_y: Option<i32>,
+    y_align: Option<String>,
+    update_interval: Option<u32>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 struct Wallpaper {
-    enabled: bool,
-    directory: String,
-    vert_adjustment: i32,
+    enabled: Option<bool>,
+    directory: Option<String>,
+    vert_adjustment: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]
 struct Config {
-    clock: Clock,
-    wallpaper: Wallpaper,
+    clock: Option<Clock>,
+    wallpaper: Option<Wallpaper>,
 }
 
+/**
+Checks if a directory or file path exists
+*/
 fn path_exists(path: &str) -> bool {
     fs::metadata(path).is_ok()
 }
@@ -89,22 +94,22 @@ fn main() -> Result<()> {
     let application = gtk4::Application::new(Some("com.clockem"), Default::default());
     let config = load_config()?;
 
-    if config.wallpaper.enabled {
-        application.connect_activate(move |app| {
-            let _ = load_css();
-            crate::wallpaper::build(app, config.wallpaper.clone());
-        });
-    } else {
-        application.connect_activate(|_app| {});
+    if let Some(wallpaper) = config.wallpaper{
+        if wallpaper.enabled.unwrap_or(false) {
+            application.connect_activate(move |app| {
+                let _ = load_css();
+                crate::wallpaper::build(app, wallpaper.clone());
+            });
+        }
     }
 
-    if config.clock.enabled {
-        application.connect_activate(move |app| {
-            let _ = load_css();
-            crate::clock::build(app, config.clock.clone());
-        });
-    } else {
-        application.connect_activate(|_app| {});
+    if let Some(clock) = config.clock{
+        if clock.enabled.unwrap_or(false) {
+            application.connect_activate(move |app| {
+                let _ = load_css();
+                crate::clock::build(app, clock.clone());
+            });
+        }
     }
 
     application.run();

@@ -1,16 +1,16 @@
 use crate::Clock;
 use chrono::Local;
-use gtk4::prelude::*;
-use gtk4_layer_shell::{Layer, LayerShell};
+use gtk4::{prelude::*, Align};
+use gtk4_layer_shell::{Edge, Layer, LayerShell};
 
-/**;
+/**
 Configures, renders, and updates clock widget.
 */
 pub fn build(application: &gtk4::Application, clock_config: Clock) {
     // SET UP WINDOW AS A LAYER
     let clock_window = gtk4::ApplicationWindow::new(application);
     clock_window.init_layer_shell();
-    clock_window.set_layer(Layer::Bottom);
+    clock_window.set_layer(Layer::Background);
     clock_window.set_namespace("clockem-clock");
 
     // LABEL STUFFS
@@ -28,35 +28,56 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     // WINDOW FORMATTING
     clock_window.set_title(Some("clockem-clock"));
 
-    // GTK4 removed the ability to just set a window's position so we have to move the clock around by messing with the window's size and aligment...
-    if clock_config.position_x < 0 { container.set_halign(gtk4::Align::Start); }
-    else { container.set_valign(gtk4::Align::End); }
+    let position_x = clock_config.position_x.unwrap_or(0);
+    let position_y = clock_config.position_y.unwrap_or(0);
 
-    if clock_config.position_y < 0 { container.set_valign(gtk4::Align::Start); }
-    else { container.set_valign(gtk4::Align::End); }
+    // TESTING WINDOW POSITION STUFFS
+    let mut anchors = Vec::new();
 
-    let position_x = clock_config.position_x.abs() * 2;
-    let position_y = clock_config.position_y.abs() * 2;
+    if let Some(s) = clock_config.y_align {
+        match s.as_str() {
+            "center" => {
+                anchors.push((Edge::Left, true));
+                container.set_valign(Align::Center)
+            }
+            "bottom" => {
+                anchors.push((Edge::Left, true));
+                anchors.push((Edge::Bottom, true));
+            }
+            _ => {
+                anchors.push((Edge::Left, true));
+                anchors.push((Edge::Top, true));
+            }
+        }
+    }
 
-    clock_window.set_default_size(position_x, position_y);
+    for (anchor, state) in anchors {
+        clock_window.set_anchor(anchor, state);
+    }
+
+    clock_window.set_margin(Edge::Left, position_x);
+    clock_window.set_margin(Edge::Top, position_y);
 
     // SHOW CLOCK
     clock_window.set_child(Some(&container));
     clock_window.show();
 
     // UPDATING CLOCK
+    let top_format = clock_config.top_format.unwrap_or("%H:%M:%S".to_string());
+    let bottom_format = clock_config.bottom_format.unwrap_or("%b %d, %Y".to_string());
+
     let tick = move || {
         top.set_text(&format!(
             "{}",
-            Local::now().format(&clock_config.top_format)
+            Local::now().format(&top_format)
         ));
         bottom.set_text(&format!(
             "{}",
-            Local::now().format(&clock_config.bottom_format)
+            Local::now().format(&bottom_format)
         ));
         // we could return glib::ControlFlow::Break to stop our clock after this tick
         glib::ControlFlow::Continue
     };
 
-    glib::timeout_add_seconds_local(1, tick);
+    glib::timeout_add_seconds_local(1 / clock_config.update_interval.unwrap_or(1), tick);
 }
