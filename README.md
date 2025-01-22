@@ -3,6 +3,7 @@ Clock and other desktop widgets for Wayland.
 
 Current functions are:
 - clock widget
+- weather
 - wallpaper
 
 Reach out to me through this repo or on discord at `justbechill` if you have widget suggestions/requests.
@@ -13,11 +14,12 @@ There is an aur package for clockem:
 yay -S clockem-git
 ```
 
-## Configuration
-Configuration files consist of `config.toml` and `style.css` in `~/.config/clockem`. If no config files are found, [default configs](https://github.com/JustBeChill/clockem/tree/main/default-configs) will be written to the correct directories.
-
 ## Example
 ![image](https://github.com/user-attachments/assets/1bbc2ff1-c1d5-4895-8a21-f6e4608cba2f)
+Send me your configs to be included in the examples!
+
+## Configuration
+Configuration files consist of `config.toml` and `style.css` in `~/.config/clockem`. If no config files are found, [default configs](https://github.com/JustBeChill/clockem/tree/main/default-configs) will be generated in the correct directories.
 
 **Clock Widget**
 |       Key       |     Value     | Default        |  Description  |
@@ -36,3 +38,19 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`enabled`      |`boolean`      |`false`          |Enable/disable widget       |
 |`directory`    |`String`       |`empty`          |Path to wallpaper|
 |`vert_adjustment`|`int`       |`0`               |May need to be used if waybar or a similar program is causing a gap to appear between wallpaper and the top of the display.|
+
+## Weather Formatting
+|   Key   |   Value  |
+| ------- | -------- |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
+|         |          |
