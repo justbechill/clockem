@@ -1,6 +1,10 @@
 use crate::Weather;
 use gtk4::{prelude::*, Align};
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
+use weer_api::{
+    chrono::{TimeZone, Utc},
+    *,
+};
 
 pub fn build(application: &gtk4::Application, weather_config: Weather) {
     // SET UP WINDOW AS A LAYER
@@ -58,4 +62,29 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     weather_window.set_child(Some(&container));
     weather_window.show();
 
+    // GET WEATHER DATA
+    let client = Client::new(
+        weather_config.api_key.unwrap_or("".to_string()).as_str(),
+        true,
+    );
+
+    let result = client
+        .realtime()
+        .query(Query::City(
+            weather_config.location.unwrap_or("London".to_string()),
+        ))
+        .call();
+
+    match result {
+        Ok(data) => {}
+        Err(e) => {
+            top.set_text(
+                weather_config
+                    .error_message
+                    .unwrap_or("Weather Error".to_string())
+                    .as_str(),
+            );
+            eprintln!("Weather error: {}", e);
+        }
+    }
 }
