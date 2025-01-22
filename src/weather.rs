@@ -76,7 +76,9 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
         .call();
 
     match result {
-        Ok(data) => {}
+        Ok(data) => {
+            println!("{:?}", data);
+        }
         Err(e) => {
             top.set_text(
                 weather_config
