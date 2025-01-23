@@ -2,10 +2,7 @@ use crate::formatting::parse_weather_string;
 use crate::Weather;
 use gtk4::{prelude::*, Align};
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
-use weer_api::{
-    chrono::{TimeZone, Utc},
-    *,
-};
+use weer_api::*;
 
 pub fn build(application: &gtk4::Application, weather_config: Weather) {
     // SET UP WINDOW AS A LAYER
@@ -32,7 +29,7 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     let position_x = weather_config.position_x.unwrap_or(0);
     let position_y = weather_config.position_y.unwrap_or(0);
 
-    // TESTING WINDOW POSITION STUFFS
+    // SET MARGINS AND ANCHOR EDGES
     let mut anchors = Vec::new();
 
     if let Some(s) = weather_config.y_align {
@@ -58,6 +55,27 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
 
     weather_window.set_margin(Edge::Left, position_x);
     weather_window.set_margin(Edge::Top, position_y);
+
+    // SET TEXT ALIGN
+    if let Some(s) = weather_config.text_align {
+        match s.as_str() {
+            "center" => {
+                top.set_halign(Align::Center);
+                bottom.set_halign(Align::Center);
+            }
+            "right" => {
+                top.set_halign(Align::End);
+                bottom.set_halign(Align::End);
+            }
+            _ => {
+                top.set_halign(Align::Start);
+                bottom.set_halign(Align::Start);
+            }
+        }
+    } else {
+        top.set_halign(Align::Start);
+        bottom.set_halign(Align::Start);
+    }
 
     // SHOW WEATHER
     weather_window.set_child(Some(&container));
