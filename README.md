@@ -16,7 +16,7 @@ yay -S clockem-git
 
 ## Example
 ![image](https://github.com/user-attachments/assets/1bbc2ff1-c1d5-4895-8a21-f6e4608cba2f)
-Send me your configs to be included in the examples!
+Send me your screenshots to be included in the examples!
 
 ## Configuration
 Configuration files consist of `config.toml` and `style.css` in `~/.config/clockem`. If no config files are found, [default configs](https://github.com/JustBeChill/clockem/tree/main/default-configs) will be generated in the correct directories.
@@ -39,18 +39,25 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`directory`    |`String`       |`empty`          |Path to wallpaper|
 |`vert_adjustment`|`int`       |`0`               |May need to be used if waybar or a similar program is causing a gap to appear between wallpaper and the top of the display.|
 
-## Weather Formatting
+## Weather Format Strings
 |   Key   |   Value  |
 | ------- | -------- |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
-|         |          |
+|`%L`     |City or location name                 |
+|`%l`     |Country name                          |
+|`%R`     |Region name (state, territory, etc.)  |
+|`%S`     |Weather condition (e.g. Clear, Cloudy)|
+|`%F`     |Actual temp in Fahrenheit             |
+|`%f`     |"Feels like" temp in Fahrenheit       |
+|`%C`     |Actual temp in Celcius                |
+|`%c`     |"Feels like" temp in Celcius          |
+|`%K`     |Actual temp in Kelvin                 |
+|`%k`     |"Feels like" temp in Kelvin           |
+|`%W`     |Wind speed in kph                     |
+|`%w`     |Wind speed in mph                     |
+|`%D`     |Wind direction, cardinal              |
+|`%d`     |Wind direction, degrees               |
+|`%P`     |Precipitation in mm                   |
+|`%p`     |Precepitation in inches               |
+|`%H`     |Percent humidity                      |
+|`%D`     |Day or night, sets to `daynight_strings` config option |
+|`%U`     |UV index                              |
