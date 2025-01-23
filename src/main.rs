@@ -29,16 +29,16 @@ struct Wallpaper {
 #[derive(Debug, Deserialize, Clone)]
 struct Weather {
     enabled: Option<bool>,
-    top_format: Option<String>,
-    bottom_format: Option<String>,
-    text_align: Option<String>,
     location: Option<String>,
     api_key: Option<String>,
     error_message: Option<String>,
     daynight_strings: Option<Vec<String>>,
+    top_format: Option<String>,
+    bottom_format: Option<String>,
     update_interval: Option<u32>,
     position_x: Option<i32>,
     position_y: Option<i32>,
+    text_align: Option<String>,
     y_align: Option<String>,
 }
 

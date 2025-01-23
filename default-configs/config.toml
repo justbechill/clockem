@@ -1,11 +1,27 @@
+# View config options at https://github.com/justbechill/clockem#configuration
+
 [clock]
 enabled = true
-top_format = "%I:%M %p"     # date format string, use command date --help to view formatting options
-bottom_format = "%b %d, %Y" # same date format string
-position_x = 0              # position in pixels from left edge of the display
-position_y = 0              # position in pixels from top edge of display; affected by things like waybar
-y_align = "top"             # options are "center", "bottom", and "top"; top if invalid
-update_interval = 1         # interval, in seconds, between updates
+top_format = "%I:%M %p"
+bottom_format = "%b %d, %Y"
+position_x = 0
+position_y = 0
+text_align = "left"
+y_align = "top"
+update_interval = 1
+
+[weather]
+enabled = true
+location = "London, GB"
+api_key = ""                        # Generate your own at https://www.weatherapi.com/
+daynight_strings = ["Day", "Night"]
+top_format = "%C°C %S"
+bottom_format = "%L, %l"
+position_x = 0
+position_y = 0
+text_align = "left"
+y_align = "center"
+update_interval = 5
 
 [wallpaper] # for now, the wallpaper image will always display at full scale, so it must be the resolution of your display to appear properly.
 enabled = false
