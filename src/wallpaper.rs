@@ -1,6 +1,6 @@
 use crate::Wallpaper;
 use gtk4::prelude::*;
-use gtk4_layer_shell::{Edge, Layer, LayerShell};
+use gtk4_layer_shell::{Layer, LayerShell};
 
 pub fn build(application: &gtk4::Application, wp_config: Wallpaper) {
     // SET UP WINDOW AS A LAYER

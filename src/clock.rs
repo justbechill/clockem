@@ -31,7 +31,7 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     let position_x = clock_config.position_x.unwrap_or(0);
     let position_y = clock_config.position_y.unwrap_or(0);
 
-    // TESTING WINDOW POSITION STUFFS
+    // SETTING MARGIN AND ANCHOR EDGES
     let mut anchors = Vec::new();
 
     if let Some(s) = clock_config.y_align {
@@ -49,6 +49,9 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
                 anchors.push((Edge::Top, true));
             }
         }
+    } else {
+        anchors.push((Edge::Left, true));
+        anchors.push((Edge::Top, true));
     }
 
     for (anchor, state) in anchors {
@@ -57,6 +60,27 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
 
     clock_window.set_margin(Edge::Left, position_x);
     clock_window.set_margin(Edge::Top, position_y);
+
+    // SET TEXT ALIGN
+    if let Some(s) = clock_config.text_align {
+        match s.as_str() {
+            "center" => {
+                top.set_halign(Align::Center);
+                bottom.set_halign(Align::Center);
+            }
+            "right" => {
+                top.set_halign(Align::End);
+                bottom.set_halign(Align::End);
+            }
+            _ => {
+                top.set_halign(Align::Start);
+                bottom.set_halign(Align::Start);
+            }
+        }
+    } else {
+        top.set_halign(Align::Start);
+        bottom.set_halign(Align::Start);
+    }
 
     // SHOW CLOCK
     clock_window.set_child(Some(&container));
@@ -75,5 +99,6 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
         glib::ControlFlow::Continue
     };
 
+    let _ = &tick();
     glib::timeout_add_seconds_local(clock_config.update_interval.unwrap_or(1), tick);
 }
