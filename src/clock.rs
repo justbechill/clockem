@@ -64,20 +64,16 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
 
     // UPDATING CLOCK
     let top_format = clock_config.top_format.unwrap_or("%H:%M:%S".to_string());
-    let bottom_format = clock_config.bottom_format.unwrap_or("%b %d, %Y".to_string());
+    let bottom_format = clock_config
+        .bottom_format
+        .unwrap_or("%b %d, %Y".to_string());
 
     let tick = move || {
-        top.set_text(&format!(
-            "{}",
-            Local::now().format(&top_format)
-        ));
-        bottom.set_text(&format!(
-            "{}",
-            Local::now().format(&bottom_format)
-        ));
+        top.set_text(&format!("{}", Local::now().format(&top_format)));
+        bottom.set_text(&format!("{}", Local::now().format(&bottom_format)));
         // we could return glib::ControlFlow::Break to stop our clock after this tick
         glib::ControlFlow::Continue
     };
 
-    glib::timeout_add_seconds_local(1 / clock_config.update_interval.unwrap_or(1), tick);
+    glib::timeout_add_seconds_local(clock_config.update_interval.unwrap_or(1), tick);
 }
