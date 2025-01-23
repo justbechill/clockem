@@ -41,8 +41,8 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`api_key`        |`String`       |`None`         |Your personal api key for getting weather data from [Weather API](https://www.weatherapi.com/).|
 |`error_message`  |`String`       |`"WeatherError"`|The message that is displayed if weather data is unavailable.|
 |`daynight_strings`|`Vec<String>` |`["Day", "Night"]`| String to be displayed depending on whether it's day or night. |
-|`top_format`     |`String`       |`%C°C %S`     |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
-|`bottom_format`  |`String`       |`%L, %l`    |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
+|`top_format`     |`String`       |`"%C°C %S"`     |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
+|`bottom_format`  |`String`       |`"%L, %l"`    |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
 |`position_x`     |`int`          |`0`            |X position of widget from the top of the display.|
 |`position_y`     |`int`          |`0`            |Y position of widget form the top of the display.|
 |`text_align`     |`String`       |`"left"`       |Text alignment in the container. Options are `"left"`, `"center"`, and `"right"`.|
