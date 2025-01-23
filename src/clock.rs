@@ -76,5 +76,5 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     };
 
     let _ = &tick;
-    glib::timeout_add_seconds_local(1 / clock_config.update_interval.unwrap_or(1), tick);
+    glib::timeout_add_seconds_local(clock_config.update_interval.unwrap_or(1), tick);
 }

@@ -68,25 +68,30 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
         true,
     );
 
-    let result = client
-        .realtime()
-        .query(Query::City(
-            weather_config.location.unwrap_or("London".to_string()),
-        ))
-        .call();
+    // UPDATE WEATHER
+    let location = weather_config.location.unwrap_or("London, GB".to_string());
+    let error_message = weather_config
+        .error_message
+        .unwrap_or("Weather Error".to_string());
 
-    match result {
-        Ok(data) => {
-            println!("{:?}", data);
+    let tick = move || {
+        let result = client
+            .realtime()
+            .query(Query::City(location.clone()))
+            .call();
+
+        match result {
+            Ok(data) => {
+                println!("{:?}", data);
+            }
+            Err(e) => {
+                top.set_text(&error_message);
+                eprintln!("Weather error: {}", e);
+            }
         }
-        Err(e) => {
-            top.set_text(
-                weather_config
-                    .error_message
-                    .unwrap_or("Weather Error".to_string())
-                    .as_str(),
-            );
-            eprintln!("Weather error: {}", e);
-        }
-    }
+
+        glib::ControlFlow::Continue
+    };
+
+    glib::timeout_add_seconds_local(weather_config.update_interval.unwrap_or(5) * 60, tick);
 }
