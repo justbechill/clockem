@@ -1,4 +1,5 @@
 mod clock;
+mod formatting;
 mod wallpaper;
 mod weather;
 
@@ -27,9 +28,12 @@ struct Wallpaper {
 #[derive(Debug, Deserialize, Clone)]
 struct Weather {
     enabled: Option<bool>,
+    top_format: Option<String>,
+    bottom_format: Option<String>,
     location: Option<String>,
     api_key: Option<String>,
     error_message: Option<String>,
+    daynight_strings: Option<Vec<String>>,
     update_interval: Option<u32>,
     position_x: Option<i32>,
     position_y: Option<i32>,

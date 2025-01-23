@@ -1,3 +1,4 @@
+use crate::formatting::parse_weather_string;
 use crate::Weather;
 use gtk4::{prelude::*, Align};
 use gtk4_layer_shell::{Edge, Layer, LayerShell};
@@ -69,10 +70,18 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     );
 
     // UPDATE WEATHER
+    let top_format = weather_config
+        .top_format
+        .unwrap_or("%S %F degrees F".to_string());
+    let bottom_format = weather_config.bottom_format.unwrap_or("%L, %R".to_string());
+
     let location = weather_config.location.unwrap_or("London, GB".to_string());
     let error_message = weather_config
         .error_message
         .unwrap_or("Weather Error".to_string());
+    let daynight_strings = weather_config
+        .daynight_strings
+        .unwrap_or(vec!["Day".to_string(), "Night".to_string()]);
 
     let tick = move || {
         let result = client
@@ -82,7 +91,11 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
 
         match result {
             Ok(data) => {
-                println!("{:?}", data);
+                let top_parsed = parse_weather_string(&data, &top_format, &daynight_strings);
+                let bottom_parsed = parse_weather_string(&data, &bottom_format, &daynight_strings);
+
+                top.set_text(&top_parsed);
+                bottom.set_text(&bottom_parsed);
             }
             Err(e) => {
                 top.set_text(&error_message);
@@ -93,5 +106,6 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
         glib::ControlFlow::Continue
     };
 
+    let _ = &tick();
     glib::timeout_add_seconds_local(weather_config.update_interval.unwrap_or(5) * 60, tick);
 }
