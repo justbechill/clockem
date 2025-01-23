@@ -47,7 +47,7 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`position_y`     |`int`          |`0`            |Y position of widget form the top of the display.|
 |`text_align`     |`String`       |`"left"`       |Text alignment in the container. Options are `"left"`, `"center"`, and `"right"`.|
 |`y_align`        |`String`       |`"top"`        |Container alignment on y axis. Options are `"center"`, `"bottom"`, and `"top"`; overrides `position_y` if not `"top"`.|
-|`update_interval`|`uint`         |`1`            |Interval in minutes between weather updates.|
+|`update_interval`|`uint`         |`5`            |Interval in minutes between weather updates.|
 
 **Wallpaper** - For now, the wallpaper image will always display at full scale, so it must be the resolution of your display to appear properly.
 |      Key      |     Value     | Default         |  Description  |
