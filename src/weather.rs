@@ -26,6 +26,14 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     // WINDOW FORMATTING
     weather_window.set_title(Some("clockem-weather"));
 
+    if let Some(width) = weather_config.width {
+        weather_window.set_default_width(width);
+    }
+
+    if let Some(height) = weather_config.height {
+        weather_window.set_default_height(height);
+    }
+
     let position_x = weather_config.position_x.unwrap_or(0);
     let position_y = weather_config.position_y.unwrap_or(0);
 
