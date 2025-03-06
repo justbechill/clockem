@@ -26,9 +26,11 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 | --------------- | ------------- | ------------- | ------------- |
 |`enabled`        |`boolean`      |`false`        |Enable/disable widget.       |
 |`top_format`     |`String`       |`%H:%M:%S`     |Date/time format string for top element. See [chrono's string formatting specifiers](https://docs.rs/chrono/latest/chrono/format/strftime/index.html#specifiers).|
-|`bottom_format`  |`String`       |`%b %d, %Y`    |Date/time format string for bottom element. See [chrono's string formatting specifiers](https://docs.rs/chrono/latest/chrono/format/strftime/index.html#specifiers).|               |
-|`position_x`     |`int`          |`0`            |X position of widget from the top of the display.|
-|`position_y`     |`int`          |`0`            |Y position of widget form the top of the display.|
+|`bottom_format`  |`String`       |`%b %d, %Y`    |Date/time format string for bottom element. See [chrono's string formatting specifiers](https://docs.rs/chrono/latest/chrono/format/strftime/index.html#specifiers).|
+|`width`          |`int`          |Adaptive       |The width of the widget in pixels. | 
+|`height`         |`int`          |Adaptive       |The height of the widget in pixels. | 
+|`position_x`     |`int`          |`0`            |X position of widget from the left side of the display.|
+|`position_y`     |`int`          |`0`            |Y position of widget from the top of the display.|
 |`text_align`     |`String`       |`"left"`       |Text alignment in the container. Options are `"left"`, `"center"`, and `"right"`.|
 |`y_align`        |`String`       |`"top"`        |Container alignment on y axis. Options are `"center"`, `"bottom"`, and `"top"`; overrides `position_y` if not `"top"`.|
 |`update_interval`|`uint`         |`1`            |Interval in seconds between clock updates.|
@@ -43,6 +45,8 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`daynight_strings`|`Vec<String>` |`["Day", "Night"]`| String to be displayed depending on whether it's day or night. |
 |`top_format`     |`String`       |`"%C°C %S"`     |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
 |`bottom_format`  |`String`       |`"%L, %l"`    |Weather format string for top element. See [Weather String Formatting](#weather-string-formatting).|
+|`width`          |`int`          |Adaptive       |The width of the widget in pixels. | 
+|`height`         |`int`          |Adaptive       |The height of the widget in pixels. | 
 |`position_x`     |`int`          |`0`            |X position of widget from the top of the display.|
 |`position_y`     |`int`          |`0`            |Y position of widget form the top of the display.|
 |`text_align`     |`String`       |`"left"`       |Text alignment in the container. Options are `"left"`, `"center"`, and `"right"`.|
