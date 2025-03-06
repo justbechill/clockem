@@ -10,6 +10,7 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     weather_window.init_layer_shell();
     weather_window.set_layer(Layer::Background);
     weather_window.set_namespace("clockem-weather");
+    weather_window.add_css_class("weather");
 
     // LABEL STUFFS
     let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);

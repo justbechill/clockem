@@ -12,6 +12,7 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     clock_window.init_layer_shell();
     clock_window.set_layer(Layer::Background);
     clock_window.set_namespace("clockem-clock");
+    clock_window.add_css_class("clock");
 
     // LABEL STUFFS
     let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
