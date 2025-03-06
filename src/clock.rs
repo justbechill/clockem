@@ -28,6 +28,14 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     // WINDOW FORMATTING
     clock_window.set_title(Some("clockem-clock"));
 
+    if let Some(width) = clock_config.width {
+        clock_window.set_default_width(width);
+    }
+
+    if let Some(height) = clock_config.height {
+        clock_window.set_default_height(height);
+    }
+
     let position_x = clock_config.position_x.unwrap_or(0);
     let position_y = clock_config.position_y.unwrap_or(0);
 
