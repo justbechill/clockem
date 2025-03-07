@@ -14,18 +14,6 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     clock_window.set_namespace("clockem-clock");
     clock_window.add_css_class("clock");
 
-    // LABEL STUFFS
-    let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
-
-    let top = gtk4::Label::new(Some("12:01:34 AM"));
-    let bottom = gtk4::Label::new(Some("Jan 17, 2025"));
-
-    top.add_css_class("clock-top");
-    bottom.add_css_class("clock-bottom");
-
-    container.append(&top);
-    container.append(&bottom);
-
     // WINDOW FORMATTING
     clock_window.set_title(Some("clockem-clock"));
 
@@ -39,6 +27,23 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
 
     let position_x = clock_config.position_x.unwrap_or(0);
     let position_y = clock_config.position_y.unwrap_or(0);
+
+    // SET JUSTIFICATION
+    let mut align = Align::Start;
+
+    if let Some(s) = clock_config.text_align {
+        align = match s.as_str() {
+            "center" => Align::Center,
+            "right" => Align::End,
+            _ => Align::Start,
+        };
+    }
+
+    // CREATE WINDOW
+    let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
+
+    let top = crate::init_label("clock-top", align, &clock_config.top_format);
+    let bottom = crate::init_label("clock-bottom", align, &clock_config.bottom_format);
 
     // SETTING MARGIN AND ANCHOR EDGES
     let mut anchors = Vec::new();
@@ -70,29 +75,12 @@ pub fn build(application: &gtk4::Application, clock_config: Clock) {
     clock_window.set_margin(Edge::Left, position_x);
     clock_window.set_margin(Edge::Top, position_y);
 
-    // SET TEXT ALIGN
-    if let Some(s) = clock_config.text_align {
-        match s.as_str() {
-            "center" => {
-                top.set_halign(Align::Center);
-                bottom.set_halign(Align::Center);
-            }
-            "right" => {
-                top.set_halign(Align::End);
-                bottom.set_halign(Align::End);
-            }
-            _ => {
-                top.set_halign(Align::Start);
-                bottom.set_halign(Align::Start);
-            }
-        }
-    } else {
-        top.set_halign(Align::Start);
-        bottom.set_halign(Align::Start);
-    }
+    //BUILD WINDOW
+    container.append(&top);
+    container.append(&bottom);
+    clock_window.set_child(Some(&container));
 
     // SHOW CLOCK
-    clock_window.set_child(Some(&container));
     clock_window.show();
 
     // UPDATING CLOCK

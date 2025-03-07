@@ -9,23 +9,11 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     let weather_window = gtk4::ApplicationWindow::new(application);
     weather_window.init_layer_shell();
     weather_window.set_layer(Layer::Background);
-    weather_window.set_namespace("clockem-weather");
+    weather_window.set_namespace("weatherem-weather");
     weather_window.add_css_class("weather");
 
-    // LABEL STUFFS
-    let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
-
-    let top = gtk4::Label::new(Some("Weather"));
-    let bottom = gtk4::Label::new(Some(""));
-
-    top.add_css_class("weather-top");
-    bottom.add_css_class("weather-bottom");
-
-    container.append(&top);
-    container.append(&bottom);
-
     // WINDOW FORMATTING
-    weather_window.set_title(Some("clockem-weather"));
+    weather_window.set_title(Some("weatherem-weather"));
 
     if let Some(width) = weather_config.width {
         weather_window.set_default_width(width);
@@ -38,7 +26,24 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     let position_x = weather_config.position_x.unwrap_or(0);
     let position_y = weather_config.position_y.unwrap_or(0);
 
-    // SET MARGINS AND ANCHOR EDGES
+    // SET TEXT ALIGN
+    let mut align = Align::Start;
+
+    if let Some(s) = weather_config.text_align {
+        align = match s.as_str() {
+            "center" => Align::Center,
+            "right" => Align::End,
+            _ => Align::Start,
+        };
+    }
+
+    // CREATE WINDOW
+    let container = gtk4::Box::new(gtk4::Orientation::Vertical, 0);
+
+    let top = crate::init_label("weather-top", align, &weather_config.top_format);
+    let bottom = crate::init_label("weather-bottom", align, &weather_config.bottom_format);
+
+    // SETTING MARGIN AND ANCHOR EDGES
     let mut anchors = Vec::new();
 
     if let Some(s) = weather_config.y_align {
@@ -56,6 +61,9 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
                 anchors.push((Edge::Top, true));
             }
         }
+    } else {
+        anchors.push((Edge::Left, true));
+        anchors.push((Edge::Top, true));
     }
 
     for (anchor, state) in anchors {
@@ -65,26 +73,10 @@ pub fn build(application: &gtk4::Application, weather_config: Weather) {
     weather_window.set_margin(Edge::Left, position_x);
     weather_window.set_margin(Edge::Top, position_y);
 
-    // SET TEXT ALIGN
-    if let Some(s) = weather_config.text_align {
-        match s.as_str() {
-            "center" => {
-                top.set_halign(Align::Center);
-                bottom.set_halign(Align::Center);
-            }
-            "right" => {
-                top.set_halign(Align::End);
-                bottom.set_halign(Align::End);
-            }
-            _ => {
-                top.set_halign(Align::Start);
-                bottom.set_halign(Align::Start);
-            }
-        }
-    } else {
-        top.set_halign(Align::Start);
-        bottom.set_halign(Align::Start);
-    }
+    //BUILD WINDOW
+    container.append(&top);
+    container.append(&bottom);
+    weather_window.set_child(Some(&container));
 
     // SHOW WEATHER
     weather_window.set_child(Some(&container));

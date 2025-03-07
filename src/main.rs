@@ -4,6 +4,7 @@ mod wallpaper;
 mod weather;
 
 use gio::prelude::*;
+use gtk4::{prelude::*, Align};
 use serde::Deserialize;
 use std::{fs, io::Result, io::Write};
 
@@ -149,4 +150,22 @@ fn main() -> Result<()> {
     application.run();
 
     Ok(())
+}
+
+pub fn init_label(css_class: &str, align: Align, format: &Option<String>) -> gtk4::Label {
+    let label: gtk4::Label;
+
+    if let Some(s) = format {
+        label = match s.as_str() {
+            "" => gtk4::Label::new(None),
+            _ => gtk4::Label::new(Some("")),
+        }
+    } else {
+        label = gtk4::Label::new(Some(""))
+    }
+
+    label.add_css_class(css_class);
+    label.set_halign(align);
+
+    return label;
 }
