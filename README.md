@@ -80,5 +80,5 @@ Configuration files consist of `config.toml` and `style.css` in `~/.config/clock
 |`%P`     |Precipitation in mm                   |
 |`%p`     |Precepitation in inches               |
 |`%H`     |Percent humidity                      |
-|`%D`     |Day or night, returns `daynight_strings` config option |
+|`%T`     |Day or night, returns `daynight_strings` config option |
 |`%U`     |UV index                              |
